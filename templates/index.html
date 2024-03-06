@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="This website is developed for identifying the safety of URLs.">
+    <meta name="keywords" content="phishing URL,phishing,cybersecurity,machine learning,classifier,python">
+    <meta name="author" content="Naman Sharma">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        
+    <link href="static/styles.css" rel="stylesheet">
+    <title>URL Detection</title>
+    
+    <style>
+        body {
+            background-image: url("https://beconnected.esafety.gov.au/pluginfile.php/84570/mod_resource/content/3/T36_C1_phishing_scams/images/t36_c1_a1_p1.png");
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: black;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            position: relative; /* Added position */
+        }
+
+        .form {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 24px; /* Reduced font size */
+        }
+
+        .form__input {
+            width: 200px; /* Adjusted width */
+            margin: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .button,
+        .button1,
+        .button2 {
+            width: 120px; /* Reduced button width */
+            margin: 5px;
+            padding: 5px;
+            box-sizing: border-box;
+            text-align: center;
+            font-size: 12px; /* Reduced font size */
+        }
+
+        #prediction {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+
+        /* Added styles for bottom buttons */
+        .bottom-buttons {
+            position: fixed; /* Fixed position */
+            bottom: 20px;
+            right: 20px; /* Adjusted position to bottom-right */
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            z-index: 1000; /* Higher z-index */
+        }
+
+        /* Styling for the welcome bar */
+        #welcome-bar {
+            background-color: #007bff; /* Blue background */
+            color: white;
+            padding: 10px 0; /* Adjusted padding */
+            text-align: center;
+            width: 100%; /* Full width */
+            position: fixed; /* Fixed position */
+            top: 0; /* Positioned at the top */
+            z-index: 1000; /* Higher z-index */
+            animation: moveBar 20s linear infinite; /* Adjusted animation */
+        }
+
+        /* Animation for moving bar */
+        @keyframes moveBar {
+            from {
+                right: 100%; /* Start from right */
+            }
+            to {
+                right: -100%; /* Move to left */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="welcome-bar">
+    <h4>Welcome to the website, you are safe here!</h4>
+</div>
+
+<br>
+<br>
+<br>
+
+<div class="container">
+    <h2>PHISHING GUARDIAN</h2> <!-- Moved heading to the top -->
+    
+    
+    <div class="col-md" id="form2">
+        <br>
+        <h6 class="right"><a href="{{ url }}" target="_blank">{{ url }}</a></h6>
+        <br>
+        <h3 id="prediction"></h3>
+    </div> 
+
+<div class="form col-md" id="form1">
+        <br>
+        <form action="/" method="post">
+            <input type="text" class="form__input" name='url' id="url" placeholder="Enter URL" required="" />
+            <button class="button2" id="button2" role="button">Check here</button>
+        </form>
+</div>
+
+    <!-- Bottom buttons -->
+    <div class="bottom-buttons">
+        <button class="button" id="button-report-phishing" role="button" onclick="reportPhishing()">Report Phishing Website</button>
+        <button class="button2" id="button2" role="button" onclick="window.open('{{url}}')" target="_blank">Still want to Continue</button>
+        <button class="button1" id="button1" role="button" onclick="window.open('{{url}}')" target="_blank">Continue</button>
+    </div>
+</div>
+
+
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+    crossorigin="anonymous"></script>
+
+<script>
+    let x = '{{xx}}';
+    let num = x * 100;
+    if (0 <= x && x < 0.50) {
+        num = 100 - num;
+    }
+    let txtx = num.toString();
+    if (x <= 1 && x >= 0.50) {
+        var label = "Website is " + txtx + "% safe to use!";
+        document.getElementById("prediction").innerHTML = label;
+        document.getElementById("button1").style.display = "block";
+    } else if (0 <= x && x < 0.50) {
+        var label = "Website is " + txtx + "% unsafe to use.."
+        document.getElementById("prediction").innerHTML = label;
+        document.getElementById("button2").style.display = "block";
+    }
+    
+    function reportPhishing() {
+        window.open('https://safebrowsing.google.com/safebrowsing/report_phish/', '_blank');
+    }
+</script>
+
+</body>
+</html>
+
